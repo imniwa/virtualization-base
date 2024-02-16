@@ -1,0 +1,7 @@
+{
+    "cek VirtualBox": {
+        "condition": False,
+        "installation": "Karena saya menggunakan RockyLinux9 saya install menggunakan command berikut",
+	"command": "yum install VirtualBox"
+    }
+}
