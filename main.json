@@ -1,3 +1,7 @@
 {
-    "cek-virtualbox": "tidak ada"
+    "cek-virtualbox": "tidak ada",
+    "install-virtualbox": {
+	"operasi-sistem": "Rocky Linux9",
+	"installation": "sudo yum install VirtualBox"
+    }
 }
