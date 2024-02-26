@@ -3,5 +3,75 @@
     "install-virtualbox": {
 	"operasi-sistem": "Rocky Linux9",
 	"installation": "sudo yum install VirtualBox"
+    },
+    "install-ubuntu-server-on-virtualbox": {
+    	"download-iso-file": "mendownload file iso dari https://releases.ubuntu.com/22.04.4/ubuntu-22.04.4-live-server-amd64.iso",
+	"membuat-vm-baru-di-virtualbox": {
+	   "mengisi-deskripsi":{
+		"name": "vbox-ubuntu-server",
+		"iso-image": "ubuntu-22.04.3-live-server-amd64.iso"
+	   },
+	   "mengisi-user": "mengisikan username dan password untuk login ke osnya",
+	   "spesifikasi-hardware": [{
+	     	"base-memory": "2048 MB",
+		"processors": "2 CPU",
+		"virtualdisk-size": "10 GB"
+	   }]
+	},
+	"menyalakan-ubuntu-server-untuk-pertama-kali": [
+	   "pilih try-or-install ubuntu",
+	   "memilih jenis bahasa, disini saya memilih `English`",
+	   "memilih opsi continue without updating",
+	   "memilih base installation minimized",
+	   "melewati beberapa bagian untuk membiarkannya tetap default hingga dimintai untuk mengisi profile setup",
+	   "menceklist install OpenSSH server",
+	   "menunggu installasi os selesai",
+	   "reboot"
+	],
+	"login-menggunakan-user-yang-sudah-dibuat": [
+	   "mengecek terminal apakah sudah berhasil digunakan menggunakan perintah `help`",
+	],
+	"melakukan-port-forwarding":{
+	   "membuka pengaturan di devices",
+	   "memilih bagian Network",
+	   "memilih bagian port-forwarding",
+	   "membuat rule untuk port-forwarding [host IP=0.0.0.0] [host Port=222] [guest-port=22]",
+	   "setelah melakukan hal tersebut vm dapat diakses melalui local komputer utama dengan menggunakan perintah `ssh kur@localhost -p 2222`"
+	},
+    },
+    "melakukan-cloning-vm":{
+	"membuka-vbox":[
+	   "melakukan clone vm dengan klik kanan pada vm yang akan diclone kemudian pilih opsi clone"
+	],
+	"menjalankan-vm-clone": [
+	   "jalankan vm yang diclone untuk mengubah nama hostname pada vm tersebut",
+	   "vm yang diclone akan memiliki konfigurasi yang sama, maka untuk membedakan vm tersebut maka perlu dilakukan configurasi"
+	],
+	"mengubah-nama-hostname": [
+	   "untuk mengubah nama hostname dapat perintah `sudo hostnamectl set-hostname {nama-perubahan}`"
+	]
+    },
+    "melakukan-ping-antar-vm":{
+	"membuka-vbox":[
+	   "untuk dapat melakukan ping antar vm kedua vm harus berada pada 1 jaringan yang sama",
+	   "pada vm1 dan vm2 dibuat adapter network yang baru, disini saya menggunakan internal network dengan name vm.usd"
+	],
+	"menjalankan-kedua-vm":[
+	   "menjalankan kedua vm untuk menyetting 2 ip static",
+	   "untuk menyetting ip static tersebut dengan mengubah file `.yaml` pada direktori `/etc/netplan`",
+	   "setelah mengubah file tersebut untuk dapat diaplikasikan dapat menggunakan perintah `sudo netplan apply`",
+	   "setelah sudah terapply maka dapat dicek dengan melakukan ping pada ip yang sudah diset pada vm yang berbeda",
+	   "jika tidak ada request timed out pada hasil ping maka bisa dipastikan kedua vm berhasil melakukan ping"
+	]
+    },
+    "mengubah-localdns-pada-vm":{
+	"menjalankan-vm":[
+	   "menjalankan vm",
+	   "membuka file /etc/hosts dengan perintah `sudo nano /etc/hosts`",
+	   "kemudian menambahkan baris baru pada vm1 `ip-adress vm2` dan sebaliknya pada vm2, ip-address diisi dengan ip yang sudah diset pada langkah sebelumnya",
+	   "untuk mengecek localdns sudah berhasil atau belum dapat dengan melakukan ping terhadap dns tersebut",
+	   "contoh pada vm1 dilakukan `ping vm2` untuk mengecek localdns tersebut"
+	]
     }
 }
+
