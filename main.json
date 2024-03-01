@@ -70,7 +70,7 @@
 	   "membuka file /etc/hosts dengan perintah `sudo nano /etc/hosts`",
 	   "kemudian menambahkan baris baru pada vm1 `ip-adress vm2` dan sebaliknya pada vm2, ip-address diisi dengan ip yang sudah diset pada langkah sebelumnya",
 	   "untuk mengecek localdns sudah berhasil atau belum dapat dengan melakukan ping terhadap dns tersebut",
-	   "contoh pada vm1 dilakukan `ping vm2` untuk mengecek localdns tersebut"
+	   "contoh pada vm1 dilakukan `ping vm2` untuk mengecek localdns tersebut "
 	]
     }
 }
