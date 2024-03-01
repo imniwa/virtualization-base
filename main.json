@@ -3,5 +3,104 @@
     "install-virtualbox": {
 	"operasi-sistem": "Rocky Linux9",
 	"installation": "sudo yum install VirtualBox"
-    }
+    },
+    "install-ubuntu-server-on-virtualbox": {
+    	"download-iso-file": "mendownload file iso dari https://releases.ubuntu.com/22.04.4/ubuntu-22.04.4-live-server-amd64.iso",
+	"membuat-vm-baru-di-virtualbox": {
+	   "mengisi-deskripsi":{
+		"name": "vbox-ubuntu-server",
+		"iso-image": "ubuntu-22.04.3-live-server-amd64.iso"
+	   },
+	   "mengisi-user": "mengisikan username dan password untuk login ke osnya",
+	   "spesifikasi-hardware": [{
+	     	"base-memory": "2048 MB",
+		"processors": "2 CPU",
+		"virtualdisk-size": "10 GB"
+	   }]
+	},
+	"menyalakan-ubuntu-server-untuk-pertama-kali": [
+	   "pilih try-or-install ubuntu",
+	   "memilih jenis bahasa, disini saya memilih `English`",
+	   "memilih opsi continue without updating",
+	   "memilih base installation minimized",
+	   "melewati beberapa bagian untuk membiarkannya tetap default hingga dimintai untuk mengisi profile setup",
+	   "menceklist install OpenSSH server",
+	   "menunggu installasi os selesai",
+	   "reboot"
+	],
+	"login-menggunakan-user-yang-sudah-dibuat": [
+	   "mengecek terminal apakah sudah berhasil digunakan menggunakan perintah `help`",
+	],
+	"melakukan-port-forwarding":{
+	   "membuka pengaturan di devices",
+	   "memilih bagian Network",
+	   "memilih bagian port-forwarding",
+	   "membuat rule untuk port-forwarding [host IP=0.0.0.0] [host Port=222] [guest-port=22]",
+	   "setelah melakukan hal tersebut vm dapat diakses melalui local komputer utama dengan menggunakan perintah `ssh kur@localhost -p 2222`"
+	},
+    },
+    "melakukan-cloning-vm":{
+	"membuka-vbox":[
+	   "melakukan clone vm dengan klik kanan pada vm yang akan diclone kemudian pilih opsi clone"
+	],
+	"menjalankan-vm-clone": [
+	   "jalankan vm yang diclone untuk mengubah nama hostname pada vm tersebut",
+	   "vm yang diclone akan memiliki konfigurasi yang sama, maka untuk membedakan vm tersebut maka perlu dilakukan configurasi"
+	],
+	"mengubah-nama-hostname": [
+	   "untuk mengubah nama hostname dapat perintah `sudo hostnamectl set-hostname {nama-perubahan}`"
+	]
+    },
+    "melakukan-ping-antar-vm":{
+	"membuka-vbox":[
+	   "untuk dapat melakukan ping antar vm kedua vm harus berada pada 1 jaringan yang sama",
+	   "pada vm1 dan vm2 dibuat adapter network yang baru, disini saya menggunakan internal network dengan name vm.usd"
+	],
+	"menjalankan-kedua-vm":[
+	   "menjalankan kedua vm untuk menyetting 2 ip static",
+	   "untuk menyetting ip static tersebut dengan mengubah file `.yaml` pada direktori `/etc/netplan`",
+	   "setelah mengubah file tersebut untuk dapat diaplikasikan dapat menggunakan perintah `sudo netplan apply`",
+	   "setelah sudah terapply maka dapat dicek dengan melakukan ping pada ip yang sudah diset pada vm yang berbeda",
+	   "jika tidak ada request timed out pada hasil ping maka bisa dipastikan kedua vm berhasil melakukan ping"
+	]
+    },
+    "mengubah-localdns-pada-vm":{
+	"menjalankan-vm":[
+	   "menjalankan vm",
+	   "membuka file /etc/hosts dengan perintah `sudo nano /etc/hosts`",
+	   "kemudian menambahkan baris baru pada vm1 `ip-adress vm2` dan sebaliknya pada vm2, ip-address diisi dengan ip yang sudah diset pada langkah sebelumnya",
+	   "untuk mengecek localdns sudah berhasil atau belum dapat dengan melakukan ping terhadap dns tersebut",
+	   "contoh pada vm1 dilakukan `ping vm2` untuk mengecek localdns tersebut "
+	]
+    },
+    "mensetup-vm2-sebagai-dbserver":{
+	"step-1": "menjalankan VM secara headless alasanya supaya lebih ringan dan sudah dapat dilakukan ssh melalui HOST utama",
+	"step-2": "melakukan command `sudo apt update` untuk merefresh local index repository ubuntu",
+	"step-3": [
+		"melakukan installasi dbserver seperti MariaDB, Postgres, atau MongoDB",
+		"karena saya akan menggunakan Postgres dan Mongodb jadi saya menginstall kedua package tersebut",
+		"untuk menginstall postgres saya cukup memanggil command `sudo apt install postgresql postgresql-contrib`",
+		"untuk menginstall mongodb ada beberapa step yang harus dilakukan",
+		"mengambil public key supaya komputer dikenali oleh server penyedia layanan mongodb sehingga dapat mengakses repository mongodb dengan menggunakan command `curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-server-6.0.gpg`",
+		"setelah itu menambahkan sourcelist apt pada sistem dengan command `echo \"deb [ arch=amd64,arm64 signed=/etc/apt/trusted.gpg.d/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list`",
+		"setelah itu melakukan command `sudo apt-get update` untuk merefresh repository local system",
+		"kemudian menginstall mongodb dengan perintah `sudo apt-get install mongodb-org`",
+		"untuk mengecek apakah service postgres atauapun mongodb berjalan dapat menggunakan perintah `sudo systemctl status nama-service.service`",
+		"untuk menjalankan service postgres ataupun mongodb dapat menggunakan perintah `sudo systemctl start nama-service.service`"
+	],
+	"step-4": "vm sebagai dbserver sudah selesai disetup, dilanjutkan untuk mengetest koneksi database dapat dengan menggunakan berbagai alat bantu yang ada"
+    },
+    "mensetup-vm1-sebagai-webserver":{
+	"step-1": "menjalankan VM secara headless seperti sebelumnya, supaya dapat dikontrol menggunakan SSH",
+	"step-2": "menginstall webserver seperti Apache atau NGINX, pada kasus saya.. saya akan menggunakan NGINX",
+	"step-3": [
+		"untuk menginstall NGINX dapat dengan menggunakan command `sudo apt-get install nginx`",
+		"kemudian menjalankan service tersebut dengan perintah `sudo systemctl start nginx.service`",
+		"untuk mengecek apakah service tersebut sudah berjalan dapat dengan menggunakan perintah curl localhost",
+		"jika dari curl tersebut mengembalikan respon html berarti service nginx sudah berjalan"
+	],
+	"step-4": "vm sudah siap untuk dijadikan webserver, dilanjutkan dengan melakukan clone project untuk mengetest lebih lanjut kedua vm apakah sudah dapat terhubung satu sama lain"
+    },
+
 }
+
