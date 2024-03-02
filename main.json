@@ -110,6 +110,35 @@
 	],
 	"step-4": "merestart service mongodb dengan perintah `sudo systemctl restart mongod.service`",
 	"step-5": "maka kemudian untuk mengakses mongosh harus dengan perintah tambahan `mongosh -u namauser -p`"
+    },
+    "setup-project": {
+	"step-1": [
+		"masuk ke webserver cek apakah perintah git dan npm sudah ada",
+		"install git dengan menggunakan perintah `sudo apt-get install git` kemudian jika sudah install nvm dengan menggunakan perintah `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash`",
+		"lakukan restart bash dengan perintah `. ~/.bashrc` kemudian lakukan `nvm install --lts` untuk menginstall nodejs dan npm dengan versi lts",
+	],
+	"step-2": "melakukan clone pada project `https://github.com/fastify/fastify-example-todo`, dengan menggunakan perintah `git clone`",
+	"step-3": "masuk ke directory fastify-example-todo kemudian lakukan perintah `npm install`",
+	"step-4": "membuat file `.env` yang berisikan key SECRET dan key MONGODB_URL",
+	"step-5": "lakukan `npm run start` untuk mengetest apakah aplikasi dapat berjalan",
+	"step-6": [
+		"melakukan konfigurasi reverse proxy pada nginx",
+		"masuk ke dalam directory `/etc/nginx/sites-available` kemudian buat file baru bernama todo-app menggunakan nano sehingga perintah tersebut sebagai berikut `nano todo-app`"
+		"kemudian isikan configurasi kurang lebih sebagai berikut",
+		"server {listen	80;listen [::]:80;server_name _;location / {proxy_pass http://127.0.0.1:3000;}}",
+		"lakukan `sudo nano default` pada pwd `/etc/nginx/sites-available` untuk mengubah konfigurasi default nginx",
+		"pada konfigurasi default nginx bagian listen 80, ubah nilai 80 ke nilai lain.. selain 80 ataupun 443",
+		"setelah selesai lakukan symbolic link dengan perintah `sudo ln -s /etc/nginx/sites-available/todo-app /etc/nginx/sites-enabled/todo-app`",
+		"kemudian restart service nginx untuk melakukan apply pada konfigurasi tersebut dengan perintah `sudo nginx -s reload`",
+		"jika tidak muncul error setelah pemanggilan perintah tersebut maka konfigurasi tersebut aman - aman saja"
+	],
+	"step-7": "setelah selesai jalankan project dengan masuk ke root directory project diclone, kemudian jalankan perintah `npm run start`",
+	"step-8": [
+		"karena port 80 pada vm sudah dilakukan port-forwarding ke host maka pada host cek port tersebut di browser apakah sudah berjalan",
+		"pada konfigurasi port-forwarding saya config 127.0.0.1:2280:10.11.12.32:80 maka saya akses di localhost saya dengan port 2280 ke path /api maka akan muncul respon {\"message\":\"Hello Fastify!\"}"
+	],
+	"step-9": "setup project selesai"
     }
 }
+
 
