@@ -101,6 +101,15 @@
 	],
 	"step-4": "vm sudah siap untuk dijadikan webserver, dilanjutkan dengan melakukan clone project untuk mengetest lebih lanjut kedua vm apakah sudah dapat terhubung satu sama lain"
     },
-
+    "secure-mongodb-pada-dbserver": {
+	"step-1": "untuk melakukan secure pada database mongodb diawali dengan membaca doa terlebih dahulu",
+	"step-2": "membuat menambahkan user dengan mengaktifkan environment mongosh",
+	"step-3": [
+		"gunakan perintah `use admin` untuk menggunakan database admin pada mongodb, kemudian buat perintah db.createUser() sesuai dengan panduan yang ada diinternet",
+		"db.createUser({user: \"AdminKur\", example_pwd: \"udahcebok\", roles: [ { role: \"userAdminAnyDatabase\", db: \"admin\" }, \"readWriteAnyDatabase\" ]})"
+	],
+	"step-4": "merestart service mongodb dengan perintah `sudo systemctl restart mongod.service`",
+	"step-5": "maka kemudian untuk mengakses mongosh harus dengan perintah tambahan `mongosh -u namauser -p`"
+    }
 }
 
