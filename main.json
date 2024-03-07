@@ -52,13 +52,17 @@
 	]
     },
     "melakukan-ping-antar-vm":{
-	"membuka-vbox":[
+	"membuka-vbox-dan-membuat-networt-NAT":[
 	   "untuk dapat melakukan ping antar vm kedua vm harus berada pada 1 jaringan yang sama",
-	   "pada vm1 dan vm2 dibuat adapter network yang baru, disini saya menggunakan internal network dengan name vm.usd"
+	   "maka pada virtualbox perlu membuat `NAT Network` baru pada bagian `File -> tools -> Network Manager`",
+	   "kemudian pilih bagian `Nat Networks` pilih create, kemudian buat prefix untuk IPv4nya, disini saya menggunakan prefix 10.11.12.0/24",
+	   "kemudian pada kedua VM ubah bagian network adapternya dengan membuat adapter NAT Networks, disini saya hanya menggunakan 1 Adapter yaitu di (Adapter 1) saya setting sebagai NAT Network dengan NAT Network yang sudah saya buat",
 	],
 	"menjalankan-kedua-vm":[
 	   "menjalankan kedua vm untuk menyetting 2 ip static",
 	   "untuk menyetting ip static tersebut dengan mengubah file `.yaml` pada direktori `/etc/netplan`",
+	   "pada VM1 saya set sebagai webserver dengan IP 10.11.12.32 dan VM2 sebagai DB-Server dengan IP 10.11.12.80",
+	   "pada konfigurasi netplan perlu diperhatikan bahwa jika tidak ada nameservers [8.8.8.8] maka bisa dipastikan VM tidak dapat terkoneksi dengan internet",
 	   "setelah mengubah file tersebut untuk dapat diaplikasikan dapat menggunakan perintah `sudo netplan apply`",
 	   "setelah sudah terapply maka dapat dicek dengan melakukan ping pada ip yang sudah diset pada vm yang berbeda",
 	   "jika tidak ada request timed out pada hasil ping maka bisa dipastikan kedua vm berhasil melakukan ping"
