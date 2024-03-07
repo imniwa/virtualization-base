@@ -72,6 +72,73 @@
 	   "untuk mengecek localdns sudah berhasil atau belum dapat dengan melakukan ping terhadap dns tersebut",
 	   "contoh pada vm1 dilakukan `ping vm2` untuk mengecek localdns tersebut "
 	]
+    },
+    "mensetup-vm2-sebagai-dbserver":{
+	"step-1": "menjalankan VM secara headless alasanya supaya lebih ringan dan sudah dapat dilakukan ssh melalui HOST utama",
+	"step-2": "melakukan command `sudo apt update` untuk merefresh local index repository ubuntu",
+	"step-3": [
+		"melakukan installasi dbserver seperti MariaDB, Postgres, atau MongoDB",
+		"karena saya akan menggunakan Postgres dan Mongodb jadi saya menginstall kedua package tersebut",
+		"untuk menginstall postgres saya cukup memanggil command `sudo apt install postgresql postgresql-contrib`",
+		"untuk menginstall mongodb ada beberapa step yang harus dilakukan",
+		"mengambil public key supaya komputer dikenali oleh server penyedia layanan mongodb sehingga dapat mengakses repository mongodb dengan menggunakan command `curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-server-6.0.gpg`",
+		"setelah itu menambahkan sourcelist apt pada sistem dengan command `echo \"deb [ arch=amd64,arm64 signed=/etc/apt/trusted.gpg.d/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list`",
+		"setelah itu melakukan command `sudo apt-get update` untuk merefresh repository local system",
+		"kemudian menginstall mongodb dengan perintah `sudo apt-get install mongodb-org`",
+		"untuk mengecek apakah service postgres atauapun mongodb berjalan dapat menggunakan perintah `sudo systemctl status nama-service.service`",
+		"untuk menjalankan service postgres ataupun mongodb dapat menggunakan perintah `sudo systemctl start nama-service.service`"
+	],
+	"step-4": "vm sebagai dbserver sudah selesai disetup, dilanjutkan untuk mengetest koneksi database dapat dengan menggunakan berbagai alat bantu yang ada"
+    },
+    "mensetup-vm1-sebagai-webserver":{
+	"step-1": "menjalankan VM secara headless seperti sebelumnya, supaya dapat dikontrol menggunakan SSH",
+	"step-2": "menginstall webserver seperti Apache atau NGINX, pada kasus saya.. saya akan menggunakan NGINX",
+	"step-3": [
+		"untuk menginstall NGINX dapat dengan menggunakan command `sudo apt-get install nginx`",
+		"kemudian menjalankan service tersebut dengan perintah `sudo systemctl start nginx.service`",
+		"untuk mengecek apakah service tersebut sudah berjalan dapat dengan menggunakan perintah curl localhost",
+		"jika dari curl tersebut mengembalikan respon html berarti service nginx sudah berjalan"
+	],
+	"step-4": "vm sudah siap untuk dijadikan webserver, dilanjutkan dengan melakukan clone project untuk mengetest lebih lanjut kedua vm apakah sudah dapat terhubung satu sama lain"
+    },
+    "secure-mongodb-pada-dbserver": {
+	"step-1": "untuk melakukan secure pada database mongodb diawali dengan membaca doa terlebih dahulu",
+	"step-2": "membuat menambahkan user dengan mengaktifkan environment mongosh",
+	"step-3": [
+		"gunakan perintah `use admin` untuk menggunakan database admin pada mongodb, kemudian buat perintah db.createUser() sesuai dengan panduan yang ada diinternet",
+		"db.createUser({user: \"AdminKur\", example_pwd: \"udahcebok\", roles: [ { role: \"userAdminAnyDatabase\", db: \"admin\" }, \"readWriteAnyDatabase\" ]})"
+	],
+	"step-4": "merestart service mongodb dengan perintah `sudo systemctl restart mongod.service`",
+	"step-5": "maka kemudian untuk mengakses mongosh harus dengan perintah tambahan `mongosh -u namauser -p`"
+    },
+    "setup-project": {
+	"step-1": [
+		"masuk ke webserver cek apakah perintah git dan npm sudah ada",
+		"install git dengan menggunakan perintah `sudo apt-get install git` kemudian jika sudah install nvm dengan menggunakan perintah `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash`",
+		"lakukan restart bash dengan perintah `. ~/.bashrc` kemudian lakukan `nvm install --lts` untuk menginstall nodejs dan npm dengan versi lts",
+	],
+	"step-2": "melakukan clone pada project `https://github.com/fastify/fastify-example-todo`, dengan menggunakan perintah `git clone`",
+	"step-3": "masuk ke directory fastify-example-todo kemudian lakukan perintah `npm install`",
+	"step-4": "membuat file `.env` yang berisikan key SECRET dan key MONGODB_URL",
+	"step-5": "lakukan `npm run start` untuk mengetest apakah aplikasi dapat berjalan",
+	"step-6": [
+		"melakukan konfigurasi reverse proxy pada nginx",
+		"masuk ke dalam directory `/etc/nginx/sites-available` kemudian buat file baru bernama todo-app menggunakan nano sehingga perintah tersebut sebagai berikut `nano todo-app`"
+		"kemudian isikan configurasi kurang lebih sebagai berikut",
+		"server {listen	80;listen [::]:80;server_name _;location / {proxy_pass http://127.0.0.1:3000;}}",
+		"lakukan `sudo nano default` pada pwd `/etc/nginx/sites-available` untuk mengubah konfigurasi default nginx",
+		"pada konfigurasi default nginx bagian listen 80, ubah nilai 80 ke nilai lain.. selain 80 ataupun 443",
+		"setelah selesai lakukan symbolic link dengan perintah `sudo ln -s /etc/nginx/sites-available/todo-app /etc/nginx/sites-enabled/todo-app`",
+		"kemudian restart service nginx untuk melakukan apply pada konfigurasi tersebut dengan perintah `sudo nginx -s reload`",
+		"jika tidak muncul error setelah pemanggilan perintah tersebut maka konfigurasi tersebut aman - aman saja"
+	],
+	"step-7": "setelah selesai jalankan project dengan masuk ke root directory project diclone, kemudian jalankan perintah `npm run start`",
+	"step-8": [
+		"karena port 80 pada vm sudah dilakukan port-forwarding ke host maka pada host cek port tersebut di browser apakah sudah berjalan",
+		"pada konfigurasi port-forwarding saya config 127.0.0.1:2280:10.11.12.32:80 maka saya akses di localhost saya dengan port 2280 ke path /api maka akan muncul respon {\"message\":\"Hello Fastify!\"}"
+	],
+	"step-9": "setup project selesai"
     }
 }
+
 
