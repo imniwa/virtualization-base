@@ -148,6 +148,12 @@
 	"step-2": "memanggil perintah `sudo apt update`",
 	"step-3": "mendownload openjdk dengan perintah `sudo apt install default-jdk`",
 	"step-4": "mengecek apakah jdk sudah terinstall dengan menggunakan perintah `java -version` dan `javac -version`"
+    },
+    "melakukan-compile-program-helloworld-java": {
+	"step-1": "membuat file helloworld.java sekaligus mengedit isi file tersebut dengan menggunakan perintah `nano helloworld.java`",
+	"step-2": "contoh program hello world https://www.programiz.com/java-programming/hello-world",
+	"step-3": "setelah membuat file helloworld.java tersebut kemudian melakukan compile dengan perintah `javac helloworld.java`",
+	"step-4": "untuk menjalankan hasil compile cukup dengan perintah `java helloworld` helloworld disini tergantung dengan nama class yang sudah dibuat didalam file .java jika classnya bernama HelloWorld maka menjalankannya pun dengan perintah `java HelloWorld`"
     }
 }
 
