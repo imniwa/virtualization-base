@@ -142,6 +142,12 @@
 		"pada konfigurasi port-forwarding saya config 127.0.0.1:2280:10.11.12.32:80 maka saya akses di localhost saya dengan port 2280 ke path /api maka akan muncul respon {\"message\":\"Hello Fastify!\"}"
 	],
 	"step-9": "setup project selesai"
+    },
+    "install-jdk": {
+	"step-1": "menyalakan vm webserver",
+	"step-2": "memanggil perintah `sudo apt update`",
+	"step-3": "mendownload openjdk dengan perintah `sudo apt install default-jdk`",
+	"step-4": "mengecek apakah jdk sudah terinstall dengan menggunakan perintah `java -version` dan `javac -version`"
     }
 }
 
